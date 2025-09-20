@@ -264,7 +264,7 @@ const PatientAppointments = () => {
       {/* Top Navigation Bar */}
       <div className="bg-white shadow-lg px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <button 
-          className="p-2 focus:outline-none" 
+          className="p-2 focus:outline-none hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out" 
           onClick={() => setSidebarOpen(true)}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -281,8 +281,13 @@ const PatientAppointments = () => {
             </svg>
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-          <button className="p-1">
-            <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+          <button 
+            onClick={() => navigate('/patient/pre-profile')}
+            className="p-1 hover:bg-gray-100 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
+          >
+            <div className="w-8 h-8 bg-gradient-to-br from-[#3B0DA3] to-[#2F077C] rounded-full hover:from-[#2F077C] hover:to-[#3B0DA3] transition-all duration-300 flex items-center justify-center">
+              <User className="w-5 h-5 text-white" />
+            </div>
           </button>
         </div>
       </div>

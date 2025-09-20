@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Mic, Clock, Calendar, FileText, User, Bell, Activity, Stethoscope, MessageCircle, RefreshCw } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useNavigate } from 'react-router-dom';
 
 // Import PatientSidebar
 import PatientSidebar from './PatientSidebar';
@@ -8,6 +8,10 @@ import PatientSidebar from './PatientSidebar';
 const PatientDashboard = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSymptoms, setSelectedSymptoms] = useState([]);
+  const [symptomInput, setSymptomInput] = useState('');
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState({
     userName: "User",
     activeAppointments: 0,
@@ -326,30 +330,32 @@ const PatientDashboard = () => {
           </div>
       
       {/* Main Content */}
-      <div className="px-4 py-6 max-w-md mx-auto lg:max-w-3xl xl:max-w-4xl">
+      <div className="px-4 py-6 max-w-md mx-auto lg:max-w-3xl xl:max-w-4xl animate-fade-in">
         {/* Search Bar */}
-        <div className="relative mb-5">
+        <div className="relative mb-5 group">
           <input
             type="text"
             placeholder="Search doctors, appointments..."
-            className="w-full px-4 py-3 pl-10 rounded-xl border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#3B0DA3] focus:border-transparent"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="w-full px-4 py-3 pl-10 rounded-xl border border-gray-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-[#3B0DA3] focus:border-transparent transition-all duration-500 ease-in-out hover:shadow-xl focus:shadow-2xl transform focus:scale-105"
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-all duration-300 group-focus-within:text-[#3B0DA3]" />
         </div>
         
         {/* Greeting Card */}
-        <div className="bg-[#3B0DA3] text-white rounded-2xl p-5 flex justify-between items-center mb-5 shadow-xl">
+        <div className="bg-[#3B0DA3] text-white rounded-2xl p-5 flex justify-between items-center mb-5 shadow-xl hover:shadow-2xl transition-all duration-500 ease-in-out transform hover:scale-105 cursor-pointer animate-slide-in-left">
           <div>
             <h2 className="text-xl font-bold">Good Morning, {dashboardData.userName}!</h2>
             <p className="text-white text-opacity-80">How are you feeling today?</p>
           </div>
-          <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center overflow-hidden shadow-md">
+          <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center overflow-hidden shadow-md transition-all duration-500 ease-in-out hover:bg-opacity-30 hover:rotate-12">
             <User className="w-7 h-7 text-white" />
           </div>
         </div>
         
         {/* AI Health Assistant */}
-        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xl mb-5">
+        <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-xl mb-5 hover:shadow-2xl transition-all duration-500 ease-in-out animate-slide-in-right">
           <div className="flex items-center mb-3">
             <div className="w-10 h-10 bg-[#3B0DA3] rounded-full flex items-center justify-center mr-3 shadow-lg">
               <Activity className="w-5 h-5 text-white" />
@@ -363,19 +369,50 @@ const PatientDashboard = () => {
           <div className="relative mb-4">
             <input
               type="text"
-              placeholder="Type your symptoms here or use voice input..."
-              className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-[#3B0DA3] focus:border-transparent text-gray-700 placeholder-gray-400"
+              placeholder="Type your symptoms here or select from below..."
+              value={symptomInput}
+              onChange={(e) => handleInputChange(e.target.value)}
+              className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-200 shadow-inner focus:outline-none focus:ring-2 focus:ring-[#3B0DA3] focus:border-transparent text-gray-700 placeholder-gray-400 transition-all duration-300 ease-in-out hover:shadow-lg"
             />
-            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-[#3B0DA3] text-white p-2 rounded-lg shadow-lg">
+            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-[#3B0DA3] text-white p-2 rounded-lg shadow-lg hover:bg-[#2F077C] transition-all duration-500 ease-in-out transform hover:scale-110 active:scale-95 hover:rotate-3">
               <Mic className="w-4 h-4" />
             </button>
           </div>
+          
+          {/* Selected Symptoms Display */}
+          {selectedSymptoms.length > 0 && (
+            <div className="mb-4 p-3 bg-blue-50 rounded-xl border border-blue-200">
+              <p className="text-sm font-medium text-gray-700 mb-2">Selected Symptoms:</p>
+              <div className="flex flex-wrap gap-2">
+                {selectedSymptoms.map((symptom, index) => (
+                  <span
+                    key={index}
+                    className="bg-[#3B0DA3] text-white rounded-full px-3 py-1 text-sm font-medium flex items-center shadow-md"
+                  >
+                    {symptom}
+                    <button
+                      onClick={() => handleSymptomRemove(symptom)}
+                      className="ml-2 text-white hover:text-red-200 transition-colors"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           
           <div className="flex flex-wrap gap-2 mb-4">
             {commonSymptoms.map((symptom, index) => (
               <button
                 key={index}
-                className="bg-blue-100 text-[#3B0DA3] rounded-full px-4 py-1 text-sm font-medium shadow-md"
+                onClick={() => handleSymptomSelect(symptom)}
+                disabled={selectedSymptoms.includes(symptom)}
+                className={`rounded-full px-4 py-1 text-sm font-medium shadow-md transition-all duration-500 ease-in-out transform hover:scale-110 active:scale-95 ${
+                  selectedSymptoms.includes(symptom)
+                    ? 'bg-[#3B0DA3] text-white'
+                    : 'bg-blue-100 text-[#3B0DA3] hover:bg-blue-200'
+                }`}
               >
                 {symptom}
               </button>
@@ -384,7 +421,16 @@ const PatientDashboard = () => {
           
           <Link 
             to="/patient/appointments"
-            className="w-full bg-[#3B0DA3] text-white py-3 rounded-lg font-medium hover:bg-[#2F077C] transition-colors shadow-lg block text-center"
+            className={`w-full py-3 rounded-lg font-medium transition-all duration-200 shadow-lg block text-center ${
+              selectedSymptoms.length > 0
+                ? 'bg-[#3B0DA3] text-white hover:bg-[#2F077C] cursor-pointer'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+            onClick={(e) => {
+              if (selectedSymptoms.length === 0) {
+                e.preventDefault();
+              }
+            }}
           >
             Book Appointment
           </Link>
@@ -393,16 +439,16 @@ const PatientDashboard = () => {
         {/* Health Overview */}
         <h2 className="text-xl font-bold text-gray-800 mb-3">Health Overview</h2>
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 flex flex-col items-center justify-center shadow-xl">
-            <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center mb-2 shadow-lg">
+          <div className="bg-white rounded-xl p-4 flex flex-col items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-500 ease-in-out transform hover:scale-105 cursor-pointer animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+            <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center mb-2 shadow-lg transition-all duration-500 ease-in-out hover:bg-cyan-200 hover:rotate-12">
               <Calendar className="h-5 w-5 text-cyan-500" />
             </div>
             <h3 className="text-3xl font-bold">{dashboardData.activeAppointments}</h3>
             <p className="text-gray-600 text-sm text-center">Active Appointments</p>
           </div>
           
-          <div className="bg-white rounded-xl p-4 flex flex-col items-center justify-center shadow-xl">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2 shadow-lg">
+          <div className="bg-white rounded-xl p-4 flex flex-col items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-500 ease-in-out transform hover:scale-105 cursor-pointer animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-2 shadow-lg transition-all duration-500 ease-in-out hover:bg-purple-200 hover:rotate-12">
               <Clock className="h-5 w-5 text-purple-500" />
             </div>
             <h3 className="text-3xl font-bold">{dashboardData.upcomingVisits}</h3>
@@ -411,7 +457,7 @@ const PatientDashboard = () => {
         </div>
         
         {/* Upcoming Appointments */}
-        <div className="bg-white rounded-2xl p-5 shadow-xl mb-6">
+        <div className="bg-white rounded-2xl p-5 shadow-xl mb-6 hover:shadow-2xl transition-all duration-300 ease-in-out">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-gray-800">Upcoming Appointments</h2>
           </div>
@@ -439,7 +485,7 @@ const PatientDashboard = () => {
         </div>
         
         {/* Recently Visited */}
-        <div className="bg-white rounded-2xl p-5 shadow-xl mb-6">
+        <div className="bg-white rounded-2xl p-5 shadow-xl mb-6 hover:shadow-2xl transition-all duration-300 ease-in-out">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-gray-800">Recently Visited</h2>
             <a href="#" className="text-sm text-cyan-500 font-medium">View All</a>
@@ -467,7 +513,7 @@ const PatientDashboard = () => {
         </div>
         
         {/* Notifications & Reminders */}
-        <div className="bg-white rounded-2xl p-5 shadow-xl mb-6">
+        <div className="bg-white rounded-2xl p-5 shadow-xl mb-6 hover:shadow-2xl transition-all duration-300 ease-in-out">
           <h2 className="text-lg font-bold text-gray-800 mb-4">Notifications & Reminders</h2>
           
           {loading ? (

@@ -40,18 +40,18 @@ const PatientSidebar = ({ isOpen, onClose }) => {
       {/* Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-500 ease-in-out"
           onClick={onClose}
         ></div>
       )}
       
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 bg-gray-100 w-64 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out z-50`}>
+      <div className={`fixed inset-y-0 left-0 bg-gray-100 w-64 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-500 ease-in-out z-50 shadow-2xl backdrop-blur-sm`}>
         <div className="h-full flex flex-col">
           {/* Logo and Close Button */}
           <div className="p-4 flex items-center justify-between">
             <MedSahayLogo />
-            <button onClick={onClose} className="p-2">
+            <button onClick={onClose} className="p-2 hover:bg-gray-200 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95 hover:rotate-90">
               <X className="h-6 w-6 text-gray-600" />
             </button>
           </div>
@@ -64,18 +64,18 @@ const PatientSidebar = ({ isOpen, onClose }) => {
                 const isActive = location.pathname === item.href;
                 
                 return (
-                  <li key={index}>
+                  <li key={index} className="animate-fade-in-up" style={{animationDelay: `${index * 0.1}s`}}>
                     <Link
                       to={item.href}
-                      className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${
-                        isActive ? 'text-[#3B0DA3] bg-white shadow-md' : 'text-gray-700 hover:bg-white hover:text-[#3B0DA3]'
+                      className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-all duration-400 ease-in-out transform hover:scale-105 active:scale-95 ${
+                        isActive ? 'text-[#3B0DA3] bg-white shadow-md' : 'text-gray-700 hover:bg-white hover:text-[#3B0DA3] hover:shadow-md'
                       }`}
                       onClick={() => {
                         window.scrollTo(0, 0);
                         onClose();
                       }}
                     >
-                      <Icon className={`h-6 w-6 ${isActive ? 'text-[#3B0DA3]' : 'text-[#3B0DA3]'}`} />
+                      <Icon className={`h-6 w-6 transition-all duration-200 ${isActive ? 'text-[#3B0DA3]' : 'text-[#3B0DA3]'}`} />
                       <span className="font-medium">{item.label}</span>
                     </Link>
                   </li>

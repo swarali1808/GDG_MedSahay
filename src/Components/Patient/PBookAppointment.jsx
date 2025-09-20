@@ -163,7 +163,7 @@ const PBookAppointment = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen" style={{ scrollBehavior: 'smooth' }}>
       {/* Sidebar */}
       <PatientSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
@@ -267,7 +267,7 @@ const PBookAppointment = () => {
                 key={slot.id}
                 onClick={() => slot.available && setSelectedTimeSlot(slot.id)}
                 disabled={!slot.available}
-                className={`w-full p-6 rounded-2xl text-left transition-all duration-200 border-2 ${
+                className={`w-full p-6 rounded-2xl text-left transition-all duration-400 ease-in-out border-2 transform hover:scale-105 active:scale-95 btn-smooth ${
                   selectedTimeSlot === slot.id
                     ? 'bg-[#3B0DA3] text-white border-[#3B0DA3] shadow-lg'
                     : slot.available
@@ -307,9 +307,9 @@ const PBookAppointment = () => {
           <button 
             onClick={handleContinueBooking}
             disabled={!selectedTimeSlot}
-            className={`w-full py-4 rounded-xl font-semibold text-lg transition-colors ${
+            className={`w-full py-4 rounded-xl font-semibold text-lg transition-all duration-400 ease-in-out transform hover:scale-105 active:scale-95 btn-smooth ${
               selectedTimeSlot
-                ? 'bg-[#3B0DA3] text-white hover:bg-[#2F077C] shadow-lg'
+                ? 'bg-[#3B0DA3] text-white hover:bg-[#2F077C] shadow-lg hover:shadow-xl'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
           >
@@ -318,7 +318,7 @@ const PBookAppointment = () => {
           
           <button 
             onClick={() => navigate(-1)}
-            className="w-full py-3 rounded-xl font-medium text-gray-600 hover:text-gray-800 transition-colors"
+            className="w-full py-3 rounded-xl font-medium text-gray-600 hover:text-gray-800 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
           >
             Back to Doctor Selection
           </button>

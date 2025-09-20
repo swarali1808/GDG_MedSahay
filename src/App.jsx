@@ -11,6 +11,8 @@ import PBookAppointment from './Components/Patient/PBookAppointment'
 import ConfirmationApp from './Components/Patient/ConfirmationApp'
 import MapNavigation from './Components/Patient/MapNavigation'
 import MapNavigation2 from './Components/Patient/MapNavigation2'
+import PatientProfile from './Components/Patient/PatientProfile'
+import PrePatientProfile from './Components/Patient/PrePatientProfile'
 
 const App = () => {
   return (
@@ -37,7 +39,8 @@ const App = () => {
         <Route path="/patient/map-navigation2" element={<MapNavigation2 />} />
         <Route path="/patient/reports" element={<PatientDashboard />} />
         <Route path="/patient/chat" element={<PatientDashboard />} />
-        <Route path="/patient/profile" element={<PatientDashboard />} />
+        <Route path="/patient/pre-profile" element={<PrePatientProfile />} />
+        <Route path="/patient/profile" element={<PatientProfile />} />
         <Route path="/patient/settings" element={<PatientDashboard />} />
         
         <Route path="*" element={<Navigate to="/" replace />} />

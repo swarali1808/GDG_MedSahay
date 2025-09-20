@@ -5,6 +5,9 @@ import SignupPage from './Pages/SignupPage'
 import SignInPage from './Pages/SignInPage'
 import { Dashboard } from './components/doctor'
 import PatientDashboard from './Components/Patient/PatientDashboard'
+import PatientAppointments from './Components/Patient/PatientAppointments'
+import PBookAppointment from './Components/Patient/PBookAppointment'
+import ConfirmationApp from './Components/Patient/ConfirmationApp'
 
 const App = () => {
   return (
@@ -23,10 +26,13 @@ const App = () => {
         
         {/* Patient routes */}
         <Route path="/patient/dashboard" element={<PatientDashboard />} />
-        <Route path="/patient/appointments" element={<PatientDashboard />} />
+        <Route path="/patient/appointments" element={<PatientAppointments />} />
+        <Route path="/patient/book-appointment" element={<PBookAppointment />} />
+        <Route path="/patient/confirmation" element={<ConfirmationApp />} />
         <Route path="/patient/reports" element={<PatientDashboard />} />
         <Route path="/patient/chat" element={<PatientDashboard />} />
         <Route path="/patient/profile" element={<PatientDashboard />} />
+        <Route path="/patient/settings" element={<PatientDashboard />} />
         
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

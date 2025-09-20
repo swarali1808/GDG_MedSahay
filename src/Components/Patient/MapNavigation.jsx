@@ -23,7 +23,7 @@ const MapNavigation = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen relative">
+    <div className="bg-gray-100 min-h-screen relative" style={{ scrollBehavior: 'smooth' }}>
       {/* Sidebar */}
       <PatientSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
@@ -66,19 +66,19 @@ const MapNavigation = () => {
         </div>
 
         {/* Top Controls */}
-        <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4">
+        <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4 animate-fade-in">
           <button 
             onClick={handleBackNavigation}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-400 ease-in-out transform hover:scale-110 active:scale-95 btn-smooth"
           >
             <ArrowLeft className="w-6 h-6 text-gray-700" />
           </button>
           
           <div className="flex space-x-3">
-            <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200">
+            <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-400 ease-in-out transform hover:scale-110 active:scale-95 btn-smooth">
               <Navigation className="w-6 h-6 text-gray-700" />
             </button>
-            <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200">
+            <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-400 ease-in-out transform hover:scale-110 active:scale-95 btn-smooth">
               <Volume2 className="w-6 h-6 text-gray-700" />
             </button>
           </div>
@@ -109,7 +109,7 @@ const MapNavigation = () => {
           <div className="w-full h-1 bg-[#3B0DA3]"></div>
           
           {/* Info Card */}
-          <div className="bg-white rounded-t-3xl px-6 py-6 shadow-2xl">
+          <div className="bg-white rounded-t-3xl px-6 py-6 shadow-2xl animate-slide-in-bottom">
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h2 className="text-3xl font-bold text-gray-900">10 mins</h2>
@@ -133,7 +133,7 @@ const MapNavigation = () => {
             {/* View Appointment Details Button */}
             <button 
               onClick={handleViewAppointmentDetails}
-              className="w-full bg-gray-50 hover:bg-gray-100 rounded-xl py-4 px-6 flex items-center justify-between transition-all duration-200 shadow-md hover:shadow-lg"
+              className="w-full bg-gray-50 hover:bg-gray-100 rounded-xl py-4 px-6 flex items-center justify-between transition-all duration-300 ease-in-out shadow-md hover:shadow-xl transform hover:scale-105"
             >
               <div className="flex items-center space-x-3">
                 <Calendar className="w-6 h-6 text-[#3B0DA3]" />

@@ -63,7 +63,7 @@ const MapNavigation2 = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen relative">
+    <div className="bg-gray-100 min-h-screen relative" style={{ scrollBehavior: 'smooth' }}>
       {/* Map Background - Same as MapNavigation */}
       <div className="relative h-screen">
         {/* Mock Map Background */}
@@ -94,7 +94,7 @@ const MapNavigation2 = () => {
         <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center p-4">
           <button 
             onClick={handleBackNavigation}
-            className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-200"
+            className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-110"
           >
             <ArrowLeft className="w-6 h-6 text-gray-700" />
           </button>
@@ -226,11 +226,11 @@ const MapNavigation2 = () => {
                 </div>
                 
                 <div className="flex space-x-3">
-                  <button className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold transition-colors duration-200 flex items-center justify-center space-x-2">
+                  <button className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 ease-in-out flex items-center justify-center space-x-2 transform hover:scale-105 hover:shadow-lg">
                     <Phone className="w-4 h-4" />
                     <span>Call</span>
                   </button>
-                  <button className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white py-3 px-4 rounded-xl font-semibold transition-colors duration-200 flex items-center justify-center space-x-2">
+                  <button className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white py-3 px-4 rounded-xl font-semibold transition-all duration-300 ease-in-out flex items-center justify-center space-x-2 transform hover:scale-105 hover:shadow-lg">
                     <Navigation2 className="w-4 h-4" />
                     <span>Directions</span>
                   </button>
@@ -240,12 +240,12 @@ const MapNavigation2 = () => {
 
             {/* Action Buttons */}
             <div className="space-y-3 mb-6">
-              <button className="w-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 py-4 px-6 rounded-xl font-semibold transition-colors duration-200 flex items-center justify-center space-x-2">
+              <button className="w-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ease-in-out flex items-center justify-center space-x-2 transform hover:scale-105 hover:shadow-lg">
                 <X className="w-5 h-5" />
                 <span>Cancel Appointment</span>
               </button>
               
-              <button className="w-full bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 py-4 px-6 rounded-xl font-semibold transition-colors duration-200 flex items-center justify-center space-x-2">
+              <button className="w-full bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ease-in-out flex items-center justify-center space-x-2 transform hover:scale-105 hover:shadow-lg">
                 <Calendar className="w-5 h-5" />
                 <span>Reschedule</span>
               </button>
@@ -255,13 +255,13 @@ const MapNavigation2 = () => {
             <div className="flex space-x-3">
               <button 
                 onClick={handleClose}
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-semibold transition-colors duration-200"
+                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-4 px-6 rounded-xl font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
               >
                 Close
               </button>
               <button 
                 onClick={handleStartNavigation}
-                className="flex-1 bg-[#3B0DA3] hover:bg-[#2F077C] text-white py-4 px-6 rounded-xl font-semibold transition-colors duration-200"
+                className="flex-1 bg-[#3B0DA3] hover:bg-[#2F077C] text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg"
               >
                 Start Navigation
               </button>

@@ -264,7 +264,7 @@ const PatientAppointments = () => {
       {/* Top Navigation Bar */}
       <div className="bg-white shadow-lg px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <button 
-          className="p-2 focus:outline-none" 
+          className="p-2 focus:outline-none hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out" 
           onClick={() => setSidebarOpen(true)}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

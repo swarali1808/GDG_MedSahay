@@ -93,7 +93,7 @@ const PatientDashboard2 = () => {
   );
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen" style={{ scrollBehavior: 'smooth' }}>
       {/* Sidebar */}
       <PatientSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaCheck } from 'react-icons/fa';
 import { MdPersonOutline } from 'react-icons/md';
 import doctorImage from '../assets/CommonImgs/Signupdoc.png'; // Placeholder image, replace with actual image path
 import logoImage from '../assets/CommonImgs/HorizontalLogo.png'; // Placeholder logo, replace with actual logo path
 const SignupPage = () => {
+  const navigate = useNavigate();
+  
   // State for form inputs
   const [formData, setFormData] = useState({
     fullName: '',
@@ -29,10 +31,53 @@ const SignupPage = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add your signup logic here
+    
+    try {
+      const response = await fetch('/api/v1/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+          role: formData.role,
+          agreeToTerms: formData.agreeToTerms
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store the token in localStorage
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        console.log('Signup successful:', data);
+        alert('Account created successfully!');
+        
+        // Navigate to dashboard based on user role
+        const userRole = data.user.role.toLowerCase();
+        if (userRole === 'doctor') {
+          navigate('/doctor/dashboard');
+        } else if (userRole === 'patient') {
+          navigate('/patient/dashboard');
+        } else {
+          // Default navigation for other roles or fallback
+          navigate('/');
+        }
+      } else {
+        console.error('Signup failed:', data.detail);
+        alert(data.detail || 'Signup failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error. Please check your connection and try again.');
+    }
   };
 
   return (
@@ -147,7 +192,7 @@ const SignupPage = () => {
                   <option value="" disabled>Choose your role</option>
                   <option value="patient">Patient</option>
                   <option value="doctor">Doctor</option>
-                  <option value="admin">Admin</option>
+
                 </select>
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                   <svg className="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

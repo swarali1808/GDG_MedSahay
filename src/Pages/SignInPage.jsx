@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaCheck, FaMobileAlt, FaHeadset, FaShieldAlt } from 'react-icons/fa';
 import { MdPersonOutline } from 'react-icons/md';
 import doctorsImage from '../assets/CommonImgs/Signindocs.svg'; // Placeholder image, you'll import the actual image
 import logoImage from '../assets/CommonImgs/HorizontalLogo.png'; // Placeholder logo image
 
 const SignInPage = () => {
+  const navigate = useNavigate();
+  
   // State for form inputs
   const [formData, setFormData] = useState({
     role: 'Doctor',
@@ -27,10 +29,49 @@ const SignInPage = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Add your signin logic here
+    
+    try {
+      const response = await fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store the token in localStorage
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        console.log('Login successful:', data);
+        alert('Login successful!');
+        
+        // Navigate to dashboard based on user role
+        const userRole = data.user.role.toLowerCase();
+        if (userRole === 'doctor') {
+          navigate('/doctor/dashboard');
+        } else if (userRole === 'patient') {
+          navigate('/patient/dashboard');
+        } else {
+          // Default navigation for other roles or fallback
+          navigate('/');
+        }
+      } else {
+        console.error('Login failed:', data.detail);
+        alert(data.detail || 'Login failed. Please check your credentials.');
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error. Please check your connection and try again.');
+    }
   };
 
   return (
@@ -92,7 +133,6 @@ const SignInPage = () => {
                 >
                   <option value="Doctor">Doctor</option>
                   <option value="Patient">Patient</option>
-                  <option value="Admin">Admin</option>
                 </select>
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                   <svg className="h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">

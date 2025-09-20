@@ -84,7 +84,7 @@ const ConfirmationApp = () => {
 
   const handleBackToHome = () => {
     window.scrollTo(0, 0);
-    navigate('/patient/dashboard');
+    navigate('/patient/dashboard2');
   };
 
   const handleViewAppointment = () => {

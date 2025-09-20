@@ -5,9 +5,12 @@ import SignupPage from './Pages/SignupPage'
 import SignInPage from './Pages/SignInPage'
 import { Dashboard } from './components/doctor'
 import PatientDashboard from './Components/Patient/PatientDashboard'
+import PatientDashboard2 from './Components/Patient/PatientDashboard2'
 import PatientAppointments from './Components/Patient/PatientAppointments'
 import PBookAppointment from './Components/Patient/PBookAppointment'
 import ConfirmationApp from './Components/Patient/ConfirmationApp'
+import MapNavigation from './Components/Patient/MapNavigation'
+import MapNavigation2 from './Components/Patient/MapNavigation2'
 
 const App = () => {
   return (
@@ -26,9 +29,12 @@ const App = () => {
         
         {/* Patient routes */}
         <Route path="/patient/dashboard" element={<PatientDashboard />} />
+        <Route path="/patient/dashboard2" element={<PatientDashboard2 />} />
         <Route path="/patient/appointments" element={<PatientAppointments />} />
         <Route path="/patient/book-appointment" element={<PBookAppointment />} />
         <Route path="/patient/confirmation" element={<ConfirmationApp />} />
+        <Route path="/patient/map-navigation" element={<MapNavigation />} />
+        <Route path="/patient/map-navigation2" element={<MapNavigation2 />} />
         <Route path="/patient/reports" element={<PatientDashboard />} />
         <Route path="/patient/chat" element={<PatientDashboard />} />
         <Route path="/patient/profile" element={<PatientDashboard />} />

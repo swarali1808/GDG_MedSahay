@@ -12,32 +12,40 @@ const PatientProfile = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [completionData, setCompletionData] = useState({
-    completion_percentage: 0,
-    missing_critical_fields: [],
+    completion_percentage: 85,
+    missing_critical_fields: ['emergency_contact', 'insurance_details'],
     is_complete: false
   });
   
   const [formData, setFormData] = useState({
     // User Profile - Backend API fields
-    full_name: '',
-    email: '',
-    phone_number: '',
-    alternative_phone: '',
-    dob: '',
-    gender: '',
-    blood_group: '',
-    permanent_address: '',
+    full_name: 'Rahul Sharma',
+    email: 'rahul.sharma@email.com',
+    phone_number: '+91 9876543210',
+    alternative_phone: '+91 8765432109',
+    dob: '1992-05-15',
+    gender: 'Male',
+    blood_group: 'B+',
+    permanent_address: '123, Green Park, Sector 12, Mumbai, Maharashtra 400001',
     current_location: {
-      address: '',
-      city: '',
-      state: '',
-      pincode: '',
-      landmark: ''
+      address: '456, Tech Park Apartments, Bandra West',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      pincode: '400050',
+      landmark: 'Near Bandra Station'
     },
     preferred_language: 'English',
-    abha_id: '',
-    medical_history: [],
-    allergies: []
+    abha_id: 'ABHA-2402-1234-5678',
+    medical_history: [
+      'Hypertension (controlled with medication)',
+      'Seasonal allergies',
+      'Appendectomy (2015)'
+    ],
+    allergies: [
+      'Penicillin',
+      'Dust mites',
+      'Peanuts'
+    ]
   });
 
   // API Service Functions

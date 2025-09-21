@@ -19,34 +19,52 @@ const PatientDashboard2 = () => {
     navigate('/patient/map-navigation');
   };
   
-  // Dummy data for the dashboard
-  const userName = "Richa";
-  const activeAppointments = 1;
-  const upcomingVisits = 2;
+  // Enhanced static data for the dashboard
+  const userName = "Rahul";
+  const activeAppointments = 2;
+  const upcomingVisits = 3;
   
   const upcomingAppointments = [
     {
       id: 1,
-      doctor: "Dr. Ram Chauhan",
-      specialty: "Cardiology",
-      hospital: "City Hospital",
+      doctor: "Dr. Priya Sharma",
+      specialty: "Cardiologist",
+      hospital: "Apollo Hospital",
       date: "Today",
-      time: "2:30 PM"
+      time: "2:30 PM",
+      type: "Consultation"
     },
     {
       id: 2,
-      doctor: "Dr. Swati D.",
-      specialty: "Dermatology",
-      hospital: "Metro Clinic",
+      doctor: "Dr. Amit Patel",
+      specialty: "Orthopedic",
+      hospital: "Fortis Healthcare",
       date: "Tomorrow",
-      time: "10:00 AM"
+      time: "10:00 AM",
+      type: "Follow-up"
+    },
+    {
+      id: 3,
+      doctor: "Dr. Sunita Reddy",
+      specialty: "Dermatologist",
+      hospital: "Max Hospital",
+      date: "Dec 23",
+      time: "4:15 PM",
+      type: "Consultation"
     }
   ];
   
   const recentlyVisited = [
-    { id: 1, name: "Dr. Hiren" },
-    { id: 2, name: "Dr. Diya" },
-    { id: 3, name: "Dr. Radha" }
+    { id: 1, name: "Dr. Rajesh Kumar", specialty: "General Physician" },
+    { id: 2, name: "Dr. Meera Shah", specialty: "Pediatrician" },
+    { id: 3, name: "Dr. Vikram Singh", specialty: "ENT Specialist" }
+  ];
+
+  const healthMetrics = [
+    { label: "Blood Pressure", value: "120/80", status: "Normal", color: "green" },
+    { label: "Heart Rate", value: "72 bpm", status: "Normal", color: "green" },
+    { label: "Blood Sugar", value: "95 mg/dL", status: "Normal", color: "green" },
+    { label: "BMI", value: "23.5", status: "Healthy", color: "green" }
   ];
   
   const notifications = [

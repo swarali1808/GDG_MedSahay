@@ -20,14 +20,80 @@ const PatientDashboard = () => {
   const [showConversationHistory, setShowConversationHistory] = useState(false);
   const [chatConnectionStatus, setChatConnectionStatus] = useState('connected'); // connected, connecting, error
   const [dashboardData, setDashboardData] = useState({
-    userName: "User",
-    activeAppointments: 0,
-    upcomingVisits: 0,
-    notificationsCount: 0
+    userName: "Rahul",
+    activeAppointments: 2,
+    upcomingVisits: 3,
+    notificationsCount: 4
   });
-  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-  const [recentlyVisited, setRecentlyVisited] = useState([]);
-  const [notifications, setNotifications] = useState([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([
+    {
+      appointment_id: 1,
+      doctor_name: "Dr. Priya Sharma",
+      specialty: "Cardiologist",
+      hospital_name: "Apollo Hospital",
+      appointment_date: "Today",
+      appointment_time: "2:30 PM"
+    },
+    {
+      appointment_id: 2,
+      doctor_name: "Dr. Amit Patel",
+      specialty: "Orthopedic",
+      hospital_name: "Fortis Healthcare",
+      appointment_date: "Tomorrow",
+      appointment_time: "10:00 AM"
+    },
+    {
+      appointment_id: 3,
+      doctor_name: "Dr. Sunita Reddy",
+      specialty: "Dermatologist",
+      hospital_name: "Max Hospital",
+      appointment_date: "Dec 23",
+      appointment_time: "4:15 PM"
+    }
+  ]);
+  const [recentlyVisited, setRecentlyVisited] = useState([
+    {
+      doctor_id: 1,
+      doctor_name: "Dr. Rajesh Kumar",
+      specialty: "General Physician"
+    },
+    {
+      doctor_id: 2,
+      doctor_name: "Dr. Meera Shah",
+      specialty: "Pediatrician"
+    },
+    {
+      doctor_id: 3,
+      doctor_name: "Dr. Vikram Singh",
+      specialty: "ENT Specialist"
+    }
+  ]);
+  const [notifications, setNotifications] = useState([
+    {
+      notification_id: 1,
+      type: "reminder",
+      title: "Medication Reminder",
+      message: "Time to take your blood pressure medication"
+    },
+    {
+      notification_id: 2,
+      type: "lab",
+      title: "Lab Results Ready",
+      message: "Your blood test results are now available"
+    },
+    {
+      notification_id: 3,
+      type: "appointment",
+      title: "Appointment Confirmation",
+      message: "Your appointment with Dr. Priya Sharma is confirmed for today at 2:30 PM"
+    },
+    {
+      notification_id: 4,
+      type: "reminder",
+      title: "Health Checkup Due",
+      message: "Annual health checkup is due next week"
+    }
+  ]);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(false);
   
@@ -240,29 +306,32 @@ const PatientDashboard = () => {
 
       setLoading(true);
       
-      // Set user name from stored user data
+      // Set user name from stored user data or use static data
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         try {
           const userData = JSON.parse(storedUser);
           setDashboardData(prev => ({
             ...prev,
-            userName: userData.full_name ? userData.full_name.split(' ')[0] : 'User'
+            userName: userData.full_name ? userData.full_name.split(' ')[0] : 'Rahul'
           }));
         } catch (error) {
           console.error('Error parsing stored user data:', error);
         }
       }
 
-      // Fetch all data from APIs
-      await Promise.all([
-        fetchDashboardData(),
-        fetchUpcomingAppointments(),
-        fetchRecentDoctors(),
-        fetchNotifications()
-      ]);
+      // Use static data instead of API calls for now
+      // await Promise.all([
+      //   fetchDashboardData(),
+      //   fetchUpcomingAppointments(),
+      //   fetchRecentDoctors(),
+      //   fetchNotifications()
+      // ]);
       
-      setLoading(false);
+      // Simulate loading time
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
     };
 
     loadData();
@@ -777,7 +846,10 @@ const PatientDashboard = () => {
           </div>
           
           {loading ? (
-            <div className="text-center py-4">Loading appointments...</div>
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#3B0DA3] mx-auto"></div>
+              <p className="text-gray-600 mt-2">Loading appointments...</p>
+            </div>
           ) : upcomingAppointments.length > 0 ? (
             <div className="space-y-5">
               {upcomingAppointments.map(appointment => (
@@ -806,7 +878,10 @@ const PatientDashboard = () => {
           </div>
           
           {loading ? (
-            <div className="text-center py-4">Loading recent doctors...</div>
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#3B0DA3] mx-auto"></div>
+              <p className="text-gray-600 mt-2 text-sm">Loading recent doctors...</p>
+            </div>
           ) : recentlyVisited.length > 0 ? (
             <div className="grid grid-cols-3 gap-4">
               {recentlyVisited.map(doctor => (
@@ -831,7 +906,10 @@ const PatientDashboard = () => {
           <h2 className="text-lg font-bold text-gray-800 mb-4">Notifications & Reminders</h2>
           
           {loading ? (
-            <div className="text-center py-4">Loading notifications...</div>
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#3B0DA3] mx-auto"></div>
+              <p className="text-gray-600 mt-2 text-sm">Loading notifications...</p>
+            </div>
           ) : notifications.length > 0 ? (
             <div className="space-y-3">
               {notifications.map(notification => (

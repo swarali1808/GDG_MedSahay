@@ -11,11 +11,13 @@ const ConfirmationApp = () => {
   // Get booking data from location state or default
   const bookingData = location.state || {
     doctor: {
-      name: "Dr. Ram Chauhan",
-      qualifications: "MBBS, MD - Cardiology",
+      name: "Dr. Priya Sharma",
+      qualifications: "MBBS, MD - Cardiology, Fellowship in Interventional Cardiology",
       specialty: "Cardiologist",
-      clinic: "Chauhan Clinic",
-      price: "Rs. 450/-"
+      clinic: "Heart Care Excellence Center",
+      price: "Rs. 650/-",
+      hospital: "Apollo Hospital, Mumbai",
+      experience: "15+ years"
     },
     date: new Date(),
     timeSlot: 'morning'
@@ -24,20 +26,20 @@ const ConfirmationApp = () => {
   // Generate token number and estimated time based on time slot
   const generateBookingDetails = (timeSlot) => {
     const tokenNumbers = {
-      morning: 'A - 23',
-      afternoon: 'B - 15',
-      evening: 'C - 8'
+      morning: 'A - 12',
+      afternoon: 'B - 08',
+      evening: 'C - 15'
     };
 
     const estimatedTimes = {
-      morning: '10:05 am',
-      afternoon: '2:30 pm',
-      evening: '6:45 pm'
+      morning: '10:30 AM',
+      afternoon: '2:45 PM',
+      evening: '7:15 PM'
     };
 
     return {
-      tokenNumber: tokenNumbers[timeSlot] || 'A - 23',
-      estimatedTime: estimatedTimes[timeSlot] || '10:05 am'
+      tokenNumber: tokenNumbers[timeSlot] || 'A - 12',
+      estimatedTime: estimatedTimes[timeSlot] || '10:30 AM'
     };
   };
 
@@ -179,7 +181,7 @@ const ConfirmationApp = () => {
               </div>
               <div>
                 <h4 className="font-semibold text-gray-900">{bookingData.doctor.clinic}</h4>
-                <p className="text-sm text-gray-600">123 Health Street, SVP Road</p>
+                <p className="text-sm text-gray-600">{bookingData.doctor.hospital || "Apollo Hospital, Bandra West, Mumbai"}</p>
               </div>
             </div>
 

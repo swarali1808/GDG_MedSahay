@@ -11,13 +11,16 @@ const PBookAppointment = () => {
   // Get doctor data from location state or default
   const doctorData = location.state?.doctor || {
     id: 1,
-    name: "Dr. Ram Chauhan",
-    qualifications: "MBBS, MD - Cardiology",
+    name: "Dr. Priya Sharma",
+    qualifications: "MBBS, MD - Cardiology, Fellowship in Interventional Cardiology",
     specialty: "Cardiologist",
-    rating: 4.9,
-    reviews: 120,
-    price: "Rs. 450/-",
-    clinic: "Chauhan Clinic"
+    rating: 4.8,
+    reviews: 156,
+    price: "Rs. 650/-",
+    clinic: "Heart Care Excellence Center",
+    experience: "15+ years",
+    languages: ["Hindi", "English", "Marathi"],
+    hospital: "Apollo Hospital, Mumbai"
   };
 
   // Calendar state
@@ -25,27 +28,30 @@ const PBookAppointment = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
 
-  // Time slots data with longer durations
+  // Time slots data with more realistic options
   const timeSlots = [
     { 
       id: 'morning',
       title: 'Morning',
-      duration: '9 AM to 12 PM',
+      duration: '9:00 AM - 12:00 PM',
       available: true,
+      slots: ['9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM'],
       icon: <Sun className="w-6 h-6 text-yellow-500" />
     },
     { 
       id: 'afternoon',
       title: 'Afternoon',
-      duration: '1 PM to 4 PM',
+      duration: '2:00 PM - 5:00 PM',
       available: true,
+      slots: ['2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM'],
       icon: <CloudSun className="w-6 h-6 text-orange-500" />
     },
     { 
       id: 'evening',
       title: 'Evening',
-      duration: '5 PM to 10 PM',
+      duration: '6:00 PM - 9:00 PM',
       available: true,
+      slots: ['6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM', '8:30 PM'],
       icon: <Moon className="w-6 h-6 text-purple-500" />
     }
   ];
@@ -206,34 +212,58 @@ const PBookAppointment = () => {
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-5 mb-6 border border-blue-100">
           <div className="flex items-start space-x-4">
             {/* Doctor Avatar */}
-            <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center shadow-lg">
-              <User className="w-8 h-8 text-gray-500" />
+            <div className="w-20 h-20 bg-gradient-to-br from-[#3B0DA3] to-[#2F077C] rounded-full flex items-center justify-center shadow-lg">
+              <User className="w-10 h-10 text-white" />
             </div>
             
             {/* Doctor Info */}
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-900">{doctorData.name}</h3>
-              <p className="text-sm text-gray-600 mb-1">{doctorData.qualifications}</p>
+              <h3 className="text-xl font-bold text-gray-900">{doctorData.name}</h3>
+              <p className="text-sm text-gray-600 mb-2">{doctorData.qualifications}</p>
               
-              {/* Specialty */}
+              {/* Specialty and Experience */}
               <div className="flex items-center mb-2">
                 <Stethoscope className="w-4 h-4 text-cyan-500 mr-2" />
                 <span className="text-sm font-medium text-[#3B0DA3]">{doctorData.specialty}</span>
+                {doctorData.experience && (
+                  <>
+                    <span className="text-gray-400 mx-2">•</span>
+                    <span className="text-sm text-gray-600">{doctorData.experience}</span>
+                  </>
+                )}
               </div>
               
-              {/* Clinic */}
-              <p className="text-sm text-gray-600 mb-2">{doctorData.clinic}</p>
+              {/* Hospital/Clinic */}
+              <p className="text-sm text-gray-600 mb-2 font-medium">{doctorData.hospital || doctorData.clinic}</p>
+              
+              {/* Languages */}
+              {doctorData.languages && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {doctorData.languages.map((lang, index) => (
+                    <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              )}
               
               {/* Rating and Price */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
-                  <span className="text-sm font-medium">{doctorData.rating}</span>
+                  <div className="flex">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className={`w-4 h-4 ${i < Math.floor(doctorData.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm font-medium ml-2">{doctorData.rating}</span>
                   <span className="text-sm text-gray-500 ml-1">({doctorData.reviews} reviews)</span>
                 </div>
-                <div className="flex items-center">
-                  <DollarSign className="w-4 h-4 text-gray-700 mr-1" />
-                  <span className="text-sm font-bold text-gray-700">{doctorData.price}</span>
+                <div className="flex items-center bg-green-100 px-3 py-1 rounded-full">
+                  <DollarSign className="w-4 h-4 text-green-700 mr-1" />
+                  <span className="text-sm font-bold text-green-700">{doctorData.price}</span>
                 </div>
               </div>
             </div>

@@ -5,7 +5,7 @@ import Chooseright from "../assets/landingPageimages/Choose-right.svg";
 import workingleft from "../assets/landingPageimages/workingleft.svg";
 import workingright from "../assets/landingPageimages/workingright.svg";
 import mobile from "../assets/landingPageimages/iPhone 16 Pro.svg";
-import logo from "../assets/landingPageimages/MediSync-whitebg.png";
+import logo from "../assets/CommonImgs/HorizontalLogo.png";
 import doc from "../assets/landingPageimages/doc.png";
 import hassle from '../assets/landingPageimages/Hassle.jpg'
 import records from '../assets/landingPageimages/records.jpg'
@@ -228,12 +228,12 @@ export function Choose() {
             ].map((box, index) => (
               <div
                 key={index}
-                className="w-60 py-6 px-3 bg-[#C5E2E8] rounded-md mx-auto"
+                className="w-60 py-6 px-3 bg-gray-50 rounded-md mx-auto"
               >
                 <img
                   src={box.imgSrc}
                   alt=""
-                  className="h-40 w-56 border border-[#54A9DF] rounded-lg"
+                  className="h-40 w-56 border border-[#3B0DA3] rounded-lg"
                 />
                 <p className="text-[14px] text-[#183149] font-semibold my-2">
                   {box.title}
@@ -363,7 +363,7 @@ export function Footer() {
 
       <div className="rounded md:text-left lg:text-right mt-3">
         <a href="/login">
-          <button className="bg-[#0053CD] h-10 px-4 rounded mb-4">
+          <button className="bg-[#3B0DA3] h-10 px-4 rounded mb-4">
             Book Consultation
           </button>
         </a>
@@ -402,7 +402,7 @@ export default function LandingPage() {
             Effortless Appointments. Smarter Consultations. Better Healthcare.
           </p>
         </div>
-        <div className="intro-buttons flex items-center justify-center w-full md:w-60 h-12 rounded-[20px] bg-[#54A9DF] text-white font-semibold">
+        <div className="intro-buttons flex items-center justify-center w-full md:w-60 h-12 rounded-[20px] bg-[#3B0DA3] text-white font-semibold">
           <a href="/signup" className="w-full text-center">
             Book Appointment Now
           </a>

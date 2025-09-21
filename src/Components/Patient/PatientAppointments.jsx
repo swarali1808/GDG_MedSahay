@@ -17,6 +17,82 @@ const PatientAppointments = () => {
   // Filter options
   const filterOptions = ['All', 'Available Today', 'Nearby', 'Top'];
 
+  // Static data for appointments and doctors
+  const upcomingAppointments = [
+    {
+      id: 1,
+      doctor_name: "Dr. Priya Sharma",
+      specialty: "Cardiologist",
+      hospital: "Apollo Hospital",
+      date: "Today",
+      time: "2:30 PM",
+      status: "confirmed",
+      type: "In-person",
+      fee: "Rs. 450/-"
+    },
+    {
+      id: 2,
+      doctor_name: "Dr. Amit Patel",
+      specialty: "Orthopedic",
+      hospital: "Fortis Healthcare",
+      date: "Tomorrow",
+      time: "10:00 AM",
+      status: "confirmed",
+      type: "Video Call",
+      fee: "Rs. 600/-"
+    },
+    {
+      id: 3,
+      doctor_name: "Dr. Sunita Reddy",
+      specialty: "Dermatologist",
+      hospital: "Max Hospital",
+      date: "Dec 23",
+      time: "4:15 PM",
+      status: "pending",
+      type: "In-person",
+      fee: "Rs. 500/-"
+    }
+  ];
+
+  const pastAppointments = [
+    {
+      id: 4,
+      doctor_name: "Dr. Rajesh Kumar",
+      specialty: "General Physician",
+      hospital: "City Hospital",
+      date: "Dec 15, 2024",
+      time: "11:00 AM",
+      status: "completed",
+      type: "In-person",
+      fee: "Rs. 350/-",
+      rating: 5
+    },
+    {
+      id: 5,
+      doctor_name: "Dr. Meera Shah",
+      specialty: "Pediatrician",
+      hospital: "Children's Hospital",
+      date: "Dec 10, 2024",
+      time: "3:30 PM",
+      status: "completed",
+      type: "Video Call",
+      fee: "Rs. 400/-",
+      rating: 4
+    },
+    {
+      id: 6,
+      doctor_name: "Dr. Vikram Singh",
+      specialty: "ENT Specialist",
+      hospital: "Metro Hospital",
+      date: "Nov 28, 2024",
+      time: "9:15 AM",
+      status: "completed",
+      type: "In-person",
+      fee: "Rs. 550/-",
+      rating: 4
+    }
+  ];
+
   // Dummy data for available doctors
   const availableDoctors = [
     {
@@ -30,7 +106,8 @@ const PatientAppointments = () => {
       price: "Rs. 450/-",
       status: "available",
       category: "nearby",
-      image: null
+      image: null,
+      hospital: "Heart Care Center"
     },
     {
       id: 2,
@@ -43,7 +120,8 @@ const PatientAppointments = () => {
       price: "Rs. 680/-",
       status: "scheduled",
       category: "top",
-      image: null
+      image: null,
+      hospital: "Skin Clinic Plus"
     },
     {
       id: 3,
@@ -324,6 +402,73 @@ const PatientAppointments = () => {
           ))}
         </div>
         
+        {/* Upcoming Appointments Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Upcoming Appointments</h2>
+          <div className="space-y-3">
+            {upcomingAppointments.map(appointment => (
+              <div key={appointment.id} className="bg-white rounded-xl p-4 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <User className="w-6 h-6 text-gray-500" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{appointment.doctor_name}</h4>
+                      <p className="text-sm text-gray-600">{appointment.specialty} • {appointment.hospital}</p>
+                      <p className="text-sm text-cyan-500 font-medium">{appointment.date}, {appointment.time}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
+                      appointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
+                      appointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {appointment.status}
+                    </span>
+                    <p className="text-sm text-gray-600 mt-1">{appointment.fee}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Past Appointments Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Past Appointments</h2>
+          <div className="space-y-3">
+            {pastAppointments.map(appointment => (
+              <div key={appointment.id} className="bg-white rounded-xl p-4 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <User className="w-6 h-6 text-gray-500" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{appointment.doctor_name}</h4>
+                      <p className="text-sm text-gray-600">{appointment.specialty} • {appointment.hospital}</p>
+                      <p className="text-sm text-gray-500">{appointment.date}, {appointment.time}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center space-x-1 mb-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star 
+                          key={i} 
+                          className={`w-4 h-4 ${i < appointment.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                        />
+                      ))}
+                    </div>
+                    <p className="text-sm text-gray-600">{appointment.fee}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Available Doctors Section */}
         <div className="mb-6">
           <h2 className="text-xl font-bold text-gray-800 mb-4">Available Doctors</h2>

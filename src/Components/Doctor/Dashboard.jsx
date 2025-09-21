@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   LuLayoutDashboard, 
   LuCalendarClock, 
@@ -18,8 +19,9 @@ import Sidebar from './Sidebar';
 
 // Main Dashboard Component
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activePatient, setActivePatient] = useState('DW');
+  const [activePatient, setActivePatient] = useState('RS');
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString('en-US', { 
     month: 'long', 
@@ -58,7 +60,7 @@ const Dashboard = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top navigation */}
-        <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <Header toggleSidebar={() => setSidebarOpen(!sidebarOpen)} navigate={navigate} />
 
         {/* Main content area */}
         <main className="flex-1 overflow-y-auto px-4 py-6 md:px-8">
@@ -99,7 +101,7 @@ const Dashboard = () => {
 };
 
 // Header Component
-const Header = ({ toggleSidebar }) => {
+const Header = ({ toggleSidebar, navigate }) => {
   return (
     <header className="bg-white shadow-sm z-10">
       <div className="px-4 sm:px-6 lg:px-8 py-4">
@@ -138,14 +140,17 @@ const Header = ({ toggleSidebar }) => {
             
             {/* Profile dropdown */}
             <div className="relative">
-              <div className="flex items-center">
+              <button 
+                onClick={() => navigate('/doctor/profile')}
+                className="flex items-center hover:bg-gray-50 rounded-lg px-2 py-1 transition-colors"
+              >
                 <img 
                   className="h-8 w-8 rounded-full border-2 border-gray-200"
                   src="https://randomuser.me/api/portraits/men/32.jpg"
                   alt="Dr. Ram" 
                 />
                 <span className="ml-2 text-sm font-medium text-gray-700">Dr. Ram</span>
-              </div>
+              </button>
             </div>
           </div>
         </div>
@@ -161,7 +166,7 @@ const VisitStatistics = () => {
       <div className="flex flex-col md:flex-row p-6 text-white">
         <div className="flex-1 mb-4 md:mb-0">
           <div>
-            <h2 className="text-xl font-bold mb-4">Good Morning <span className="text-2xl">Dr. Ram Sharma!</span></h2>
+            <h2 className="text-xl font-bold mb-4">Good Morning <span className="text-2xl">Dr. Ram !</span></h2>
             <div className="mb-6">
               <p className="text-lg font-medium">Visits for Today</p>
               <p className="text-6xl font-bold mt-2">104</p>
@@ -273,44 +278,44 @@ const CalendarWidget = ({ date }) => {
 const PatientList = ({ activePatient, setActivePatient }) => {
   const patients = [
     {
-      id: 'DW', 
-      name: 'Denzel White', 
+      id: 'RS', 
+      name: 'Rahul Sharma', 
       time: '9:00 AM', 
       type: 'Report', 
       bgColor: 'bg-green-100', 
       textColor: 'text-green-800'
     },
     {
-      id: 'SM', 
-      name: 'Stacy Mitchell', 
+      id: 'PP', 
+      name: 'Priya Patel', 
       time: '9:15 AM', 
       type: 'Weekly Visit',
       bgColor: 'bg-pink-100',
       textColor: 'text-pink-800'
     },
     {
-      id: 'AD', 
-      name: 'Amy Dunham', 
+      id: 'AK', 
+      name: 'Amit Kumar', 
       time: '9:30 AM', 
       type: 'Routine Checkup',
       bgColor: 'bg-blue-100',
       textColor: 'text-blue-800'
     },
     {
-      id: 'DJ', 
-      name: 'Demi Joan', 
+      id: 'SR', 
+      name: 'Sunita Reddy', 
       time: '9:50 AM', 
       type: 'Report',
       bgColor: 'bg-green-100',
       textColor: 'text-green-800'
     },
     {
-      id: 'SM2', 
-      name: 'Susan Myers', 
+      id: 'MS', 
+      name: 'Meera Shah', 
       time: '10:15 AM', 
-      type: 'Weekly Visit',
-      bgColor: 'bg-pink-100',
-      textColor: 'text-pink-800'
+      type: 'Consultation',
+      bgColor: 'bg-purple-100',
+      textColor: 'text-purple-800'
     }
   ];
   
@@ -361,38 +366,76 @@ const PatientList = ({ activePatient, setActivePatient }) => {
 const ConsultationView = ({ patientId }) => {
   // This would be fetched based on the patientId in a real app
   const patientData = {
-    id: 'DW',
-    name: 'Denzel White',
-    age: '28 Years 3 Months',
-    gender: 'Male',
-    symptoms: [
-      { id: 1, name: 'Fever', iconColor: 'text-blue-600' },
-      { id: 2, name: 'Cough', iconColor: 'text-blue-600' },
-      { id: 3, name: 'Heart Burn', iconColor: 'text-blue-600' }
-    ],
-    lastChecked: {
-      doctor: 'Dr Evenly',
-      date: '21 April 2021',
-      prescription: '#27896TD'
+    RS: {
+      id: 'RS',
+      name: 'Rahul Sharma',
+      age: '28 Years',
+      gender: 'Male',
+      symptoms: [
+        { id: 1, name: 'Fever', iconColor: 'text-red-600' },
+        { id: 2, name: 'Cough', iconColor: 'text-blue-600' },
+        { id: 3, name: 'Hypertension', iconColor: 'text-purple-600' }
+      ],
+      lastChecked: {
+        doctor: 'Dr Ram Sharma',
+        date: '20 September 2024',
+        prescription: '#BP001'
+      },
+      observation: 'High blood pressure with mild cold symptoms.',
+      prescription: 'Amlodipine 5mg - Once daily in the morning\nParacetamol 500mg - Twice daily after meals\nRest and fluids'
     },
-    observation: 'High fever and cough at normal hemoglobin levels.',
-    prescription: 'Paracetamol - 2 times a day\nDiazepam - Day and Night before meal\nWizayl'
+    PP: {
+      id: 'PP',
+      name: 'Priya Patel',
+      age: '34 Years',
+      gender: 'Female',
+      symptoms: [
+        { id: 1, name: 'Diabetes', iconColor: 'text-orange-600' },
+        { id: 2, name: 'Fatigue', iconColor: 'text-yellow-600' }
+      ],
+      lastChecked: {
+        doctor: 'Dr Ram Sharma',
+        date: '19 September 2024',
+        prescription: '#DM002'
+      },
+      observation: 'Diabetes Type 2 with mild fatigue. Blood sugar levels need monitoring.',
+      prescription: 'Metformin 500mg - Twice daily with meals\nBlood glucose monitoring\nDiet counseling'
+    },
+    AK: {
+      id: 'AK',
+      name: 'Amit Kumar',
+      age: '45 Years',
+      gender: 'Male',
+      symptoms: [
+        { id: 1, name: 'Emergency', iconColor: 'text-red-600' },
+        { id: 2, name: 'Chest Pain', iconColor: 'text-red-600' }
+      ],
+      lastChecked: {
+        doctor: 'Dr Ram Sharma',
+        date: '21 September 2024',
+        prescription: '#EM003'
+      },
+      observation: 'Emergency case with chest pain. Requires immediate attention.',
+      prescription: 'Emergency medication protocol\nCardiac evaluation\nImmediate rest'
+    }
   };
+  
+  const currentPatient = patientData[patientId];
   
   return (
     <div>
       <h3 className="font-semibold text-lg mb-4">Consultation</h3>
       
-      {patientId === 'DW' ? (
+      {currentPatient ? (
         <div>
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center">
               <div className="h-10 w-10 bg-green-100 text-green-800 rounded-full flex items-center justify-center font-medium mr-3">
-                {patientData.id}
+                {currentPatient.id}
               </div>
               <div>
-                <h4 className="font-medium">{patientData.name}</h4>
-                <p className="text-xs text-gray-500">{patientData.gender} - {patientData.age}</p>
+                <h4 className="font-medium">{currentPatient.name}</h4>
+                <p className="text-xs text-gray-500">{currentPatient.gender} - {currentPatient.age}</p>
               </div>
             </div>
             <button className="text-gray-500">
@@ -402,7 +445,7 @@ const ConsultationView = ({ patientId }) => {
           
           {/* Symptoms */}
           <div className="flex space-x-4 mb-6">
-            {patientData.symptoms.map(symptom => (
+            {currentPatient.symptoms.map(symptom => (
               <div key={symptom.id} className="flex flex-col items-center">
                 <div className={`w-10 h-10 ${symptom.iconColor} bg-blue-100 rounded-full flex items-center justify-center mb-1`}>
                   {symptom.id === 1 && <div className="h-3 w-3 bg-red-500 rounded-full"></div>}
@@ -429,23 +472,23 @@ const ConsultationView = ({ patientId }) => {
           <div className="mb-4">
             <div className="flex justify-between text-sm mb-1">
               <span className="font-medium">Last Checked</span>
-              <span className="text-gray-500">{patientData.lastChecked.doctor} on {patientData.lastChecked.date}</span>
+              <span className="text-gray-500">{currentPatient.lastChecked.doctor} on {currentPatient.lastChecked.date}</span>
             </div>
             <div className="text-sm text-gray-500">
-              Prescription {patientData.lastChecked.prescription}
+              Prescription {currentPatient.lastChecked.prescription}
             </div>
           </div>
           
           {/* Observation */}
           <div className="mb-4">
             <h5 className="font-medium text-sm mb-1">Observation</h5>
-            <p className="text-sm text-gray-600">{patientData.observation}</p>
+            <p className="text-sm text-gray-600">{currentPatient.observation}</p>
           </div>
           
           {/* Prescription */}
           <div>
             <h5 className="font-medium text-sm mb-1">Prescription</h5>
-            <p className="text-sm text-gray-600 whitespace-pre-line">{patientData.prescription}</p>
+            <p className="text-sm text-gray-600 whitespace-pre-line">{currentPatient.prescription}</p>
           </div>
         </div>
       ) : (

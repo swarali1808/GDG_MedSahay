@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Mic, Clock, Calendar, FileText, User, Bell, Activity, Stethoscope, MessageCircle, RefreshCw, Send, X, MapPin, Phone } from 'lucide-react';
+import { Search, Mic, Clock, Calendar, FileText, User, Bell, Activity, Stethoscope, MessageCircle, RefreshCw, Send, X, MapPin, Phone, CheckCircle, AlertTriangle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // Import PatientSidebar
@@ -498,6 +498,156 @@ const PatientDashboard = () => {
     }
   };
 
+  // Function to detect if user wants to book an appointment
+  const detectAppointmentRequest = (message) => {
+    const appointmentKeywords = [
+      'book appointment', 'schedule appointment', 'make appointment', 'appointment',
+      'schedule', 'book', 'need to see doctor', 'visit doctor', 'checkup'
+    ];
+    
+    return appointmentKeywords.some(keyword => 
+      message.toLowerCase().includes(keyword.toLowerCase())
+    );
+  };
+
+  // Function to parse user information from message
+  const parseUserInfo = (message) => {
+    const info = {
+      name: null,
+      contact: null,
+      location: null,
+      symptoms: null,
+      appointmentType: 'routine checkup'
+    };
+
+    // Extract name patterns
+    const namePatterns = [
+      /(?:my name is|i'm|i am|name is)\s+([a-zA-Z\s]+?)(?:\s*,|\s*\.|\s+and|\s+contact|\s+located|\s*$)/i,
+      /([a-zA-Z]+\s+[a-zA-Z']+)(?:\s*,|\s+contact|\s+located)/i
+    ];
+
+    for (const pattern of namePatterns) {
+      const nameMatch = message.match(pattern);
+      if (nameMatch && nameMatch[1]) {
+        info.name = nameMatch[1].trim();
+        break;
+      }
+    }
+
+    // Extract contact patterns
+    const contactPatterns = [
+      /(?:contact|phone|number|mobile)[\s:is]*(\+?91[-\s]?\d{10})/i,
+      /(\+?91[-\s]?\d{10})/i,
+      /(\d{10})/i
+    ];
+
+    for (const pattern of contactPatterns) {
+      const contactMatch = message.match(pattern);
+      if (contactMatch && contactMatch[1]) {
+        info.contact = contactMatch[1].trim();
+        break;
+      }
+    }
+
+    // Extract location patterns
+    const locationPatterns = [
+      /(?:located|location|at|in|from)\s+([a-zA-Z\s,]+?)(?:\s*\.|\s*$)/i,
+      /(?:i'm at|i am at)\s+([a-zA-Z\s,]+?)(?:\s*\.|\s*$)/i
+    ];
+
+    for (const pattern of locationPatterns) {
+      const locationMatch = message.match(pattern);
+      if (locationMatch && locationMatch[1]) {
+        info.location = locationMatch[1].trim();
+        break;
+      }
+    }
+
+    // Extract symptoms
+    const symptomKeywords = [
+      'pain', 'headache', 'fever', 'cough', 'nausea', 'fatigue', 'vomiting',
+      'stomach pain', 'back pain', 'joint pain', 'chest pain', 'sore throat',
+      'difficulty breathing', 'dizziness', 'weakness'
+    ];
+
+    const symptoms = symptomKeywords.filter(symptom => 
+      message.toLowerCase().includes(symptom)
+    );
+
+    if (symptoms.length > 0) {
+      info.symptoms = symptoms.join(', ');
+      info.appointmentType = 'medical consultation';
+    }
+
+    // Check for routine/emergency
+    if (message.toLowerCase().includes('routine')) {
+      info.appointmentType = 'routine checkup';
+    } else if (message.toLowerCase().includes('emergency') || message.toLowerCase().includes('urgent')) {
+      info.appointmentType = 'emergency';
+    }
+
+    return info;
+  };
+
+  // Function to book appointment using external API
+  const bookAppointment = async (userInfo, message) => {
+    try {
+      console.log('Booking appointment with info:', userInfo);
+      
+      const response = await fetch('https://clinic-patient-flow-operations-98477387037.asia-south1.run.app/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: message
+        }),
+      });
+
+      console.log('Appointment booking API response status:', response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Appointment booking response:', data);
+        return data;
+      } else {
+        console.error('Appointment booking API error:', response.status, response.statusText);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      return null;
+    }
+  };
+
+  // Function to format appointment confirmation message
+  const formatAppointmentConfirmation = (appointmentData) => {
+    if (!appointmentData || !appointmentData.response) {
+      return "Sorry, I couldn't process your appointment request. Please try again or contact our support team.";
+    }
+
+    const response = appointmentData.response;
+    
+    // Create a formatted appointment confirmation
+    const confirmationMessage = `
+🏥 **APPOINTMENT CONFIRMATION**
+
+${response}
+
+📞 **Need Help?**
+If you have any questions or need to modify your appointment, please contact our support team.
+
+🚨 **Important Notes:**
+- Please arrive 15 minutes before your scheduled time
+- Bring a valid ID and any relevant medical documents
+- If you experience any emergency symptoms, please call 108 immediately
+
+Thank you for choosing MedSahay for your healthcare needs!
+    `.trim();
+
+    return confirmationMessage;
+  };
+
   const sendChatMessage = async () => {
     if (!chatInput.trim()) return;
 
@@ -515,84 +665,112 @@ const PatientDashboard = () => {
     setChatConnectionStatus('connecting');
 
     try {
-      const token = getAuthToken();
-      if (!token) {
-        throw new Error('No authentication token available');
-      }
-
-      console.log('Sending chat message to AI...');
-      console.log('Message:', currentMessage);
-      console.log('Conversation ID:', conversationId);
-
-      const response = await fetch('http://localhost:8000/api/v1/ai/chat', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: currentMessage,
-          conversation_id: conversationId,
-          message_type: 'text',
-          include_user_context: true
-        }),
-      });
-
-      console.log('Chat API response status:', response.status);
-
-      if (response.status === 401) {
-        console.error('Authentication failed for chat API');
-        setChatConnectionStatus('error');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('user');
-        setAuthError(true);
-        navigate('/login');
-        return;
-      }
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Chat response received:', data);
-        setChatConnectionStatus('connected');
+      // Check if this is an appointment booking request
+      const isAppointmentRequest = detectAppointmentRequest(currentMessage);
+      
+      if (isAppointmentRequest) {
+        console.log('Detected appointment booking request');
         
-        // Update conversation ID if it's a new conversation
-        if (!conversationId && data.conversation_id) {
-          console.log('Setting new conversation ID:', data.conversation_id);
-          setConversationId(data.conversation_id);
+        // Parse user information
+        const userInfo = parseUserInfo(currentMessage);
+        console.log('Parsed user info:', userInfo);
+        
+        // Book appointment using external API
+        const appointmentResult = await bookAppointment(userInfo, currentMessage);
+        
+        if (appointmentResult) {
+          setChatConnectionStatus('connected');
+          
+          const appointmentMessage = {
+            id: Date.now() + 1,
+            sender: 'ai',
+            message: formatAppointmentConfirmation(appointmentResult),
+            timestamp: new Date().toISOString(),
+            messageType: 'appointment_confirmation',
+            appointmentData: appointmentResult
+          };
+
+          setChatMessages(prev => [...prev, appointmentMessage]);
+          
+          // Update dashboard data to reflect new appointment
+          setDashboardData(prev => ({
+            ...prev,
+            activeAppointments: prev.activeAppointments + 1,
+            upcomingVisits: prev.upcomingVisits + 1
+          }));
+          
+        } else {
+          throw new Error('Failed to book appointment');
         }
-
-        const aiMessage = {
-          id: Date.now() + 1,
-          sender: 'ai',
-          message: data.ai_message || 'I received your message, but I\'m having trouble generating a response right now.',
-          timestamp: new Date().toISOString(),
-          responseType: data.response_type,
-          extractedSymptoms: data.extracted_symptoms,
-          severityAssessment: data.severity_assessment,
-          emergencyAlert: data.emergency_alert,
-          followUpQuestions: data.follow_up_questions,
-          suggestedSpecialties: data.suggested_specialties
-        };
-
-        setChatMessages(prev => [...prev, aiMessage]);
-
-        // Handle emergency alerts
-        if (data.emergency_alert) {
-          alert('Emergency Alert: ' + data.ai_message);
-        }
-
       } else {
-        setChatConnectionStatus('error');
-        // Handle different error status codes
-        let errorMessage = 'Sorry, I encountered an error. Please try again.';
-        
-        if (response.status === 500) {
-          errorMessage = 'The AI service is temporarily unavailable. Please try again in a moment.';
-        } else if (response.status === 429) {
-          errorMessage = 'Too many requests. Please wait a moment before trying again.';
+        // Handle regular chat messages using existing AI API
+        const token = getAuthToken();
+        if (!token) {
+          throw new Error('No authentication token available');
         }
-        
-        throw new Error(`Chat API error: ${response.status} - ${errorMessage}`);
+
+        console.log('Sending regular chat message to AI...');
+        const response = await fetch('http://localhost:8000/api/v1/ai/chat', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: currentMessage,
+            conversation_id: conversationId,
+            message_type: 'text',
+            include_user_context: true
+          }),
+        });
+
+        console.log('Chat API response status:', response.status);
+
+        if (response.status === 401) {
+          console.error('Authentication failed for chat API');
+          setChatConnectionStatus('error');
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('user');
+          setAuthError(true);
+          navigate('/login');
+          return;
+        }
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Chat response received:', data);
+          setChatConnectionStatus('connected');
+          
+          // Update conversation ID if it's a new conversation
+          if (!conversationId && data.conversation_id) {
+            console.log('Setting new conversation ID:', data.conversation_id);
+            setConversationId(data.conversation_id);
+          }
+
+          const aiMessage = {
+            id: Date.now() + 1,
+            sender: 'ai',
+            message: data.ai_message || 'I received your message, but I\'m having trouble generating a response right now.',
+            timestamp: new Date().toISOString(),
+            responseType: data.response_type,
+            extractedSymptoms: data.extracted_symptoms,
+            severityAssessment: data.severity_assessment,
+            emergencyAlert: data.emergency_alert,
+            followUpQuestions: data.follow_up_questions,
+            suggestedSpecialties: data.suggested_specialties
+          };
+
+          setChatMessages(prev => [...prev, aiMessage]);
+
+          // Handle emergency alerts
+          if (data.emergency_alert) {
+            alert('Emergency Alert: ' + data.ai_message);
+          }
+
+        } else {
+          setChatConnectionStatus('error');
+          throw new Error(`Chat API error: ${response.status}`);
+        }
       }
     } catch (error) {
       console.error('Error sending chat message:', error);
@@ -605,7 +783,7 @@ const PatientDashboard = () => {
       } else if (error.message.includes('401')) {
         errorText = 'Authentication error. Please refresh the page and try again.';
       } else if (error.message.includes('500')) {
-        errorText = 'The AI service is temporarily unavailable. Please try again in a moment.';
+        errorText = 'The service is temporarily unavailable. Please try again in a moment.';
       }
       
       const errorMessage = {
@@ -631,6 +809,17 @@ const PatientDashboard = () => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendChatMessage();
+    }
+  };
+
+  // Handle book appointment button click
+  const handleBookAppointment = () => {
+    if (selectedSymptoms.length > 0) {
+      setChatOpen(true);
+      setChatInput(`Hi, I need to book an appointment. I'm experiencing ${selectedSymptoms.join(', ')}.`);
+    } else {
+      setChatOpen(true);
+      setChatInput('Hi, I need to book an appointment for a routine checkup.');
     }
   };
   
@@ -802,21 +991,12 @@ const PatientDashboard = () => {
             ))}
           </div>
           
-          <Link 
-            to="/patient/appointments"
-            className={`w-full py-3 rounded-lg font-medium transition-all duration-200 shadow-lg block text-center ${
-              selectedSymptoms.length > 0
-                ? 'bg-[#3B0DA3] text-white hover:bg-[#2F077C] cursor-pointer'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-            onClick={(e) => {
-              if (selectedSymptoms.length === 0) {
-                e.preventDefault();
-              }
-            }}
+          <button 
+            onClick={handleBookAppointment}
+            className="w-full py-3 rounded-lg font-medium transition-all duration-200 shadow-lg bg-[#3B0DA3] text-white hover:bg-[#2F077C] cursor-pointer"
           >
             Book Appointment
-          </Link>
+          </button>
         </div>
         
         {/* Health Overview */}
@@ -1042,6 +1222,20 @@ const PatientDashboard = () => {
                       <Activity className="w-12 h-12 mx-auto mb-4 text-[#3B0DA3]" />
                       <p className="text-lg font-medium">Hello! I'm MedSahay AI</p>
                       <p className="text-sm">How can I help you with your health today?</p>
+                      <div className="mt-4 space-y-2">
+                        <button
+                          onClick={() => setChatInput('Hi, I need to book an appointment for a routine checkup.')}
+                          className="block w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                        >
+                          📅 Book an appointment
+                        </button>
+                        <button
+                          onClick={() => setChatInput('I\'m experiencing some symptoms and need medical advice.')}
+                          className="block w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                        >
+                          🩺 Get medical advice
+                        </button>
+                      </div>
                     </div>
                   )}
                   
@@ -1051,79 +1245,95 @@ const PatientDashboard = () => {
                       className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-[80%] p-3 rounded-2xl ${
+                        className={`max-w-[85%] p-3 rounded-2xl ${
                           message.sender === 'user'
                             ? 'bg-[#3B0DA3] text-white'
+                            : message.messageType === 'appointment_confirmation'
+                            ? 'bg-green-50 text-gray-800 border border-green-200'
                             : 'bg-gray-100 text-gray-800'
                         }`}
                       >
-                        <p className="text-sm">{message.message}</p>
-                        
-                        {/* Show emergency alert */}
-                        {message.emergencyAlert && (
-                          <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded-lg">
-                            <p className="text-red-700 text-xs font-medium">⚠️ Emergency Alert - Seek immediate medical attention</p>
-                          </div>
-                        )}
-                        
-                        {/* Show extracted symptoms */}
-                        {message.extractedSymptoms && message.extractedSymptoms.length > 0 && (
-                          <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
-                            <p className="text-blue-700 text-xs font-medium">Detected symptoms:</p>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {message.extractedSymptoms.map((symptom, index) => (
-                                <span key={index} className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full text-xs">
-                                  {symptom}
-                                </span>
-                              ))}
+                        {/* Special formatting for appointment confirmations */}
+                        {message.messageType === 'appointment_confirmation' ? (
+                          <div className="space-y-3">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <CheckCircle className="w-5 h-5 text-green-600" />
+                              <span className="font-semibold text-green-700">Appointment Confirmed!</span>
+                            </div>
+                            <div className="whitespace-pre-line text-sm leading-relaxed">
+                              {message.message}
                             </div>
                           </div>
-                        )}
+                        ) : (
+                          <div>
+                            <p className="text-sm whitespace-pre-line">{message.message}</p>
+                            
+                            {/* Show emergency alert */}
+                            {message.emergencyAlert && (
+                              <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded-lg">
+                                <p className="text-red-700 text-xs font-medium">⚠️ Emergency Alert - Seek immediate medical attention</p>
+                              </div>
+                            )}
+                            
+                            {/* Show extracted symptoms */}
+                            {message.extractedSymptoms && message.extractedSymptoms.length > 0 && (
+                              <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p className="text-blue-700 text-xs font-medium">Detected symptoms:</p>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {message.extractedSymptoms.map((symptom, index) => (
+                                    <span key={index} className="bg-blue-200 text-blue-800 px-2 py-1 rounded-full text-xs">
+                                      {symptom}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
 
-                        {/* Show severity assessment */}
-                        {message.severityAssessment && (
-                          <div className={`mt-2 p-2 border rounded-lg ${
-                            message.severityAssessment === 'severe' ? 'bg-red-50 border-red-200' :
-                            message.severityAssessment === 'moderate' ? 'bg-yellow-50 border-yellow-200' :
-                            'bg-green-50 border-green-200'
-                          }`}>
-                            <p className={`text-xs font-medium ${
-                              message.severityAssessment === 'severe' ? 'text-red-700' :
-                              message.severityAssessment === 'moderate' ? 'text-yellow-700' :
-                              'text-green-700'
-                            }`}>
-                              Severity: {message.severityAssessment.charAt(0).toUpperCase() + message.severityAssessment.slice(1)}
-                            </p>
-                          </div>
-                        )}
+                            {/* Show severity assessment */}
+                            {message.severityAssessment && (
+                              <div className={`mt-2 p-2 border rounded-lg ${
+                                message.severityAssessment === 'severe' ? 'bg-red-50 border-red-200' :
+                                message.severityAssessment === 'moderate' ? 'bg-yellow-50 border-yellow-200' :
+                                'bg-green-50 border-green-200'
+                              }`}>
+                                <p className={`text-xs font-medium ${
+                                  message.severityAssessment === 'severe' ? 'text-red-700' :
+                                  message.severityAssessment === 'moderate' ? 'text-yellow-700' :
+                                  'text-green-700'
+                                }`}>
+                                  Severity: {message.severityAssessment.charAt(0).toUpperCase() + message.severityAssessment.slice(1)}
+                                </p>
+                              </div>
+                            )}
 
-                        {/* Show recommended specialty */}
-                        {message.suggestedSpecialties && message.suggestedSpecialties.length > 0 && (
-                          <div className="mt-2 p-2 bg-purple-50 border border-purple-200 rounded-lg">
-                            <p className="text-purple-700 text-xs font-medium">Recommended specialist:</p>
-                            <p className="text-purple-600 text-xs">{message.suggestedSpecialties[0]}</p>
+                            {/* Show recommended specialty */}
+                            {message.suggestedSpecialties && message.suggestedSpecialties.length > 0 && (
+                              <div className="mt-2 p-2 bg-purple-50 border border-purple-200 rounded-lg">
+                                <p className="text-purple-700 text-xs font-medium">Recommended specialist:</p>
+                                <p className="text-purple-600 text-xs">{message.suggestedSpecialties[0]}</p>
+                              </div>
+                            )}
+                            
+                            {/* Show follow-up questions */}
+                            {message.followUpQuestions && message.followUpQuestions.length > 0 && (
+                              <div className="mt-2 space-y-1">
+                                {message.followUpQuestions.map((question, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => {
+                                      setChatInput(question);
+                                    }}
+                                    className="block w-full text-left p-2 text-xs bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                                  >
+                                    💡 {question}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         )}
                         
-                        {/* Show follow-up questions */}
-                        {message.followUpQuestions && message.followUpQuestions.length > 0 && (
-                          <div className="mt-2 space-y-1">
-                            {message.followUpQuestions.map((question, index) => (
-                              <button
-                                key={index}
-                                onClick={() => {
-                                  setChatInput(question);
-                                  sendChatMessage();
-                                }}
-                                className="block w-full text-left p-2 text-xs bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                              >
-                                💡 {question}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        
-                        <p className="text-xs opacity-60 mt-1">
+                        <p className="text-xs opacity-60 mt-2">
                           {new Date(message.timestamp).toLocaleTimeString()}
                         </p>
                       </div>
@@ -1164,9 +1374,15 @@ const PatientDashboard = () => {
                     </button>
                   </div>
                   
-                  {/* Quick symptom buttons */}
+                  {/* Quick action buttons */}
                   <div className="flex flex-wrap gap-2 mt-3">
-                    {commonSymptoms.map((symptom, index) => (
+                    <button
+                      onClick={() => setChatInput('Hi, I need to book an appointment for a routine checkup. My name is [Your Name], contact is [Your Phone], and I\'m located at [Your Location].')}
+                      className="px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 rounded-full text-xs transition-colors"
+                    >
+                      📅 Book Appointment
+                    </button>
+                    {commonSymptoms.slice(0, 3).map((symptom, index) => (
                       <button
                         key={index}
                         onClick={() => setChatInput(`I have ${symptom.toLowerCase()}`)}

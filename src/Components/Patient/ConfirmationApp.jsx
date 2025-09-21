@@ -118,7 +118,10 @@ const ConfirmationApp = () => {
             </svg>
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-          <button className="p-1">
+          <button 
+            className="p-1"
+            onClick={() => navigate('/patient/profile')}
+          >
             <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
           </button>
         </div>

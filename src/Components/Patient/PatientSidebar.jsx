@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Calendar, FileText, Settings, X } from 'lucide-react';
+import { Home, Calendar, FileText, Settings, User, X } from 'lucide-react';
 
 const PatientSidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
@@ -8,6 +8,7 @@ const PatientSidebar = ({ isOpen, onClose }) => {
   const menuItems = [
     { icon: Home, label: 'Home', href: '/patient/dashboard' },
     { icon: Calendar, label: 'Appointments', href: '/patient/appointments' },
+    { icon: User, label: 'Profile', href: '/patient/profile' },
     { icon: FileText, label: 'Reports', href: '/patient/reports' },
     { icon: Settings, label: 'Settings', href: '/patient/settings' },
   ];

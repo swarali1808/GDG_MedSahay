@@ -118,7 +118,7 @@ const PatientDashboard2 = () => {
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
           <button 
-            onClick={() => navigate('/patient/pre-profile')}
+            onClick={() => navigate('/patient/profile')}
             className="p-1 hover:bg-gray-100 rounded-lg transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
           >
             <div className="w-8 h-8 bg-gradient-to-br from-[#3B0DA3] to-[#2F077C] rounded-full hover:from-[#2F077C] hover:to-[#3B0DA3] transition-all duration-300 flex items-center justify-center">

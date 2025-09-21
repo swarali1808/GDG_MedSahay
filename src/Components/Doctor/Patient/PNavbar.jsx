@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Menu, X, Home, Calendar, FileText, HelpCircle, Bell, User } from 'lucide-react';
 
 const PNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const menuItems = [
-    { icon: Home, label: 'Home', href: '#' },
-    { icon: Calendar, label: 'Appointments', href: '#' },
+    { icon: Home, label: 'Home', href: '/patient/dashboard' },
+    { icon: Calendar, label: 'Appointments', href: '/patient/appointments' },
     { icon: FileText, label: 'Reports', href: '#' },
     { icon: HelpCircle, label: 'Support', href: '#' }
   ];
@@ -61,7 +63,10 @@ const PNavbar = () => {
             <Bell className="w-5 h-5 text-gray-600" />
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-          <button className="p-1">
+          <button 
+            className="p-1"
+            onClick={() => navigate('/patient/profile')}
+          >
             <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
               <User className="w-5 h-5 text-gray-600" />
             </div>
@@ -105,17 +110,21 @@ const PNavbar = () => {
             {/* Menu Items */}
             <div className="p-6 space-y-2">
               {menuItems.map((item, index) => (
-                <a
+                <button
                   key={index}
-                  href={item.href}
-                  className="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group"
-                  onClick={toggleMobileMenu}
+                  onClick={() => {
+                    if (item.href !== '#') {
+                      navigate(item.href);
+                    }
+                    toggleMobileMenu();
+                  }}
+                  className="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group w-full text-left"
                 >
                   <div className="p-2 rounded-lg bg-[#3B0DA3] bg-opacity-10 group-hover:bg-opacity-20 transition-colors">
                     <item.icon className="w-6 h-6 text-[#3B0DA3]" />
                   </div>
                   <span className="text-lg font-medium text-gray-800">{item.label}</span>
-                </a>
+                </button>
               ))}
             </div>
           </div>
@@ -148,14 +157,18 @@ const PNavbar = () => {
         {/* Desktop Menu Items */}
         <div className="flex items-center space-x-8">
           {menuItems.map((item, index) => (
-            <a
+            <button
               key={index}
-              href={item.href}
+              onClick={() => {
+                if (item.href !== '#') {
+                  navigate(item.href);
+                }
+              }}
               className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors group"
             >
               <item.icon className="w-5 h-5 text-[#3B0DA3] group-hover:text-[#2F077C]" />
               <span className="font-medium text-gray-700 group-hover:text-gray-900">{item.label}</span>
-            </a>
+            </button>
           ))}
         </div>
 
@@ -165,7 +178,10 @@ const PNavbar = () => {
             <Bell className="w-6 h-6 text-gray-600" />
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
           </button>
-          <button className="p-1">
+          <button 
+            className="p-1"
+            onClick={() => navigate('/patient/profile')}
+          >
             <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center hover:bg-gray-400 transition-colors">
               <User className="w-6 h-6 text-gray-600" />
             </div>

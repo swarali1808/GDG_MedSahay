@@ -178,14 +178,26 @@ const PBookAppointment = () => {
         
         <h1 className="text-lg font-bold text-gray-900">Select Date & Time</h1>
         
-        <button 
-          className="p-2 focus:outline-none" 
-          onClick={() => setSidebarOpen(true)}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button 
+            className="p-1 hover:bg-gray-100 rounded-full transition-all duration-200"
+            onClick={() => navigate('/patient/profile')}
+            title="View Profile"
+          >
+            <div className="w-8 h-8 bg-gradient-to-br from-[#3B0DA3] to-[#2F077C] rounded-full flex items-center justify-center">
+              <User className="w-4 h-4 text-white" />
+            </div>
+          </button>
+          
+          <button 
+            className="p-2 focus:outline-none" 
+            onClick={() => setSidebarOpen(true)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+        </div>
       </div>
       
       {/* Main Content */}
